@@ -1,4 +1,32 @@
-dbus 1.15.10 (UNRELEASED)
+dbus 1.15.12 (UNRELEASED)
+=========================
+
+Enhancements:
+
+• D-Bus Specification 0.43:
+  · Reorganise documentation of the message bus to make it easier to add
+    new interfaces (dbus!472, Simon McVittie)
+  · Document o.fd.DBus.Debug.Stats interface (dbus!472, Simon McVittie)
+  · Document o.fd.DBus.Verbose interface (dbus!472, Simon McVittie)
+  · Formatting improvements (dbus!471, dbus!472; Simon McVittie)
+  · Don't imply that all clients need to support obsolete message bus
+    implementations (dbus!471, Simon McVittie)
+
+Bug fixes:
+
+• When building API documentation with Doxygen, always generate a working
+  link in the index HTML page
+  (dbus#519, dbus!470; Ralf Habacker, Simon McVittie)
+
+• When building with Meson, add (more) test dependencies so that 'meson test'
+  does not always need to be preceded by 'meson compile'
+  (dbus!468, Simon McVittie)
+
+Internal changes:
+
+• CI fixes (dbus!474, Simon McVittie)
+
+dbus 1.15.10 (2024-09-25)
 =========================
 
 Build-time configuration changes:
@@ -12,6 +40,64 @@ Enhancements:
   This will allow 32-bit builds of libdbus to continue working after 2038
   if there is OS-level support for 64-bit time_t, either opt-in
   (as on 32-bit glibc systems) or by default. (dbus!444, Alexander Kanavin)
+
+• When building with CMake, build more HTML documentation
+  (dbus#504, Ralf Habacker)
+
+Bug fixes:
+
+• Don't crash if configured to watch more than 128 directories with
+  inotify (dbus#481, hongjinghao)
+
+• Never add (uid_t) -1, (gid_t) -1 or (pid_t) 0 to credentials
+  (dbus!464, Alyssa Ross)
+
+• Fix a regression since 1.15.0 for "autolaunch:" on Windows
+  (dbus#503, Thomas Sondergaard)
+
+• When building with Meson, don't use stdatomic.h if it exists but is
+  non-functional, for example under Visual Studio 2022
+  (dbus#494, Thomas Sondergaard)
+
+• When building with Meson, add test dependencies so that 'meson test'
+  does not always need to be preceded by 'meson compile'
+  (dbus!465, Alyssa Ross)
+
+• When building with Meson, really enable launchd if appropriate
+  (dbus!463, Alyssa Ross)
+
+• In the test suite, use a more widely-implemented group name 'tty'
+  in preference to 'bin' (dbus#514, Alyssa Ross)
+
+• Ensure that `dbus-test-tool spam` options cannot leave the payload
+  length uninitialized (dbus!469, Simon McVittie)
+
+• Fix compiler warnings with gcc 14 (dbus!469, Simon McVittie)
+
+Documentation:
+
+• Clarify ownership transfer of pending call in
+  dbus_connection_send_with_reply() (dbus!455, Wiebe Cazemier)
+
+• Explicitly document dbus-send exit status (dbus#452, Philip Withnall)
+
+• Refer to d-spy in preference to unmaintaned D-Feet
+  (dbus!460, Ludovico de Nittis)
+
+• Update URL to Bustle tool (dbus!460, Ludovico de Nittis)
+
+Internal changes:
+
+• Replace _dbus_string_append_int(), _dbus_string_append_uint() with
+  calls to _dbus_string_append_printf()
+  (dbus!445, Simon McVittie)
+
+• Clean up unused macros in CMake build
+  (dbus!463, Alyssa Ross)
+
+• Internal CI changes
+  (dbus#487, dbus#488, dbus#489, dbus#509;
+  Ralf Habacker, Simon McVittie)
 
 dbus 1.15.8 (2023-08-21)
 ========================
@@ -30,6 +116,10 @@ Build-time configuration changes:
   procedure as for a git clone (starting with the `./autogen.sh` script).
 
 Enhancements:
+
+• D-Bus Specification 0.42:
+  · GetConnectionCredentials can return ProcessFD
+    (dbus!420, dbus!398; Luca Boccassi)
 
 • On Linux with sufficiently new glibc and kernel headers, report a pinned
   process file descriptor (pidfd) as the ProcessFD member of the

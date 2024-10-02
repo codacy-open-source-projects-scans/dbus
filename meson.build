@@ -21,7 +21,7 @@
 
 project('dbus',
     'c',
-    version: '1.15.9',
+    version: '1.15.11',
     meson_version: '>=0.56',
 )
 
@@ -70,7 +70,7 @@ config.set_quoted('DBUS_DAEMON_NAME', 'dbus-daemon')
 lt_current = 41
 ## increment any time the source changes;
 ## set to 0 if you increment CURRENT
-lt_revision = 0
+lt_revision = 1
 ## increment if any interfaces have been added;
 ## set to 0 if any interfaces have been changed or removed.
 ## removal has precedence over adding, so set to 0 if both happened.
@@ -336,6 +336,10 @@ can_upload_docs = doxygen.found() and xsltproc.found() and ducktype.found()
 qhelpgen = find_program('qhelpgenerator', 'qhelpgenerator-qt5', required: get_option('qt_help'))
 qt_help_generate = doxygen.found() and qhelpgen.found()
 
+data_config.set(
+    'DBUS_APIDOC_LINK',
+    doxygen.found() ? '<a href="api/html/index.html">libdbus API Documentation</a>' : '',
+)
 data_config.set('DBUS_GENERATE_MAN', platform_windows ? 'NO' : 'YES')
 data_config.set('DOXYGEN_QCH_FILE', meson.current_build_dir()
     / 'doc' / 'api' / 'qch' / 'dbus-@0@.qch'.format(version))
