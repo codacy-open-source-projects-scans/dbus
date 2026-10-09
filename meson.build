@@ -398,7 +398,7 @@ endif
 message_bus = get_option('message_bus')
 
 if get_option('modular_tests').disabled()
-    glib = dependency('', required: false)
+    glib = not_found
 else
     glib = dependency(
         'glib-2.0', version: '>=2.40',
@@ -420,7 +420,7 @@ if glib.found()
         have_gio_unix = gio.found()
     endif
 else
-    gio = dependency('', required: false)
+    gio = not_found
     have_gio_unix = false
 endif
 use_glib = glib.found() and gio.found()
@@ -433,7 +433,7 @@ if message_bus
         ],
     )
 else
-    expat = dependency('', required: false)
+    expat = not_found
 endif
 
 if expat.type_name() == 'internal'
@@ -549,6 +549,11 @@ if use_systemd
             : '/usr/lib/systemd/user'
         )
     endif
+
+    # Version 257 and above support locked system accounts; use if available.
+    if systemd.version().version_compare('>=257')
+        data_config.set('DBUS_USER_LOCK', '!')
+    endif
 else
     systemctl = ''
 endif
@@ -559,7 +564,7 @@ if use_systemd
     if elogind_opt.enabled()
         error('-Dsystemd and -Delogind are mutually exclusive')
     endif
-    elogind = dependency('', required: false)
+    elogind = not_found
 else
     elogind = dependency('libelogind', version: '>=209', required: elogind_opt)
 endif
@@ -601,14 +606,9 @@ config.set_quoted('DBUS_CONSOLE_OWNER_FILE', console_owner_file)
 if get_option('libaudit').disabled()
     have_libaudit = false
 else
-    libaudit = cc.find_library('audit', required: false)
-    libaudit_ok = cc.has_function('audit_log_user_avc_message', dependencies: libaudit)
-    cap_ng   = cc.find_library('cap-ng', required: false)
-    cap_ng_ok   = cc.has_function('capng_clear', dependencies: cap_ng)
-    have_libaudit = libaudit_ok and cap_ng_ok
-    if get_option('libaudit').enabled() and not have_libaudit
-        error('libaudit support requested but not found')
-    endif
+    libaudit = dependency('audit', required: get_option('libaudit'))
+    cap_ng = dependency('libcap-ng', required: get_option('libaudit'))
+    have_libaudit = libaudit.found() and cap_ng.found()
     # For the systemd system unit
     data_config.set('AMBIENT_CAPS', 'AmbientCapabilities=CAP_AUDIT_WRITE')
 endif
@@ -630,7 +630,7 @@ config.set('HAVE_ADT', adt_api_check)
 if adt_api_check
     adt_libs = cc.find_library('bsm')
 else
-    adt_libs = dependency('', required: false)
+    adt_libs = not_found
 endif
 
 # Check for SCM_RIGHTS

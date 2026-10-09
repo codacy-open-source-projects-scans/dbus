@@ -15,6 +15,9 @@ Build system and dependencies:
   the compile-time DBUS_VERSION or the runtime dbus_get_version().
   (dbus#530, dbus!494; Simon McVittie)
 
+• Enabling libaudit integration requires libaudit 2.7.4 and cap-ng 0.6.5
+  (dbus!553, Alyssa Ross)
+
 Build-time configuration:
 
 • The Meson and CMake build systems no longer look at $TMPDIR, $TEMP or $TMP
@@ -42,6 +45,10 @@ Build-time configuration:
 Enhancements:
 
 • D-Bus Specification 0.44:
+  · Standardize org.freedesktop.DBus.Experimental annotation,
+    which is similar to org.freedesktop.DBus.Deprecated but for newly-added
+    features that have not yet stabilized
+    (dbus!555, Luca Boccassi)
   · Don't say that launchd is open-source, which is no longer true for
     current versions (Akihiro Suda)
 
@@ -52,7 +59,28 @@ Enhancements:
 • When built with Meson, libelogind can be used as an alternative to
   libsystemd (dbus!509, Dudemanguy)
 
+• If systemd version 257 or newer is available, the sysusers.d(5)
+  configuration now creates the system bus user locked
+  (dbus!546, Tobias Stoeckmann)
+
+• Use `return` in preference to `exit()` in dbus-uuidgen(1) so that
+  more runtime error-checking instrumentation can run
+  (dbus!541, Hieu Van Nguyen)
+
+• Clean up a duplicate code path while parsing bus configuration
+  (dbus!536, GermanAizek)
+
+• Build system cleanup
+  (dbus!552, Alyssa Ross)
+
 Bug fixes:
+
+• When built with Meson, fix CMake builds that discover libdbus via
+  CMake rather than pkg-config metadata
+  (dbus!542, Zephyr Lykos)
+
+• Fix static linking to libaudit and cap-ng
+  (dbus!553, Alyssa Ross)
 
 • Avoid a busy-loop on non-Linux operating systems that can report
   end-of-stream with POLLHUP but neither POLLIN nor POLLERR, such as
@@ -82,6 +110,9 @@ Bug fixes:
 • Fix the Meson build on Solaris derivatives such as illumos
   (dbus#557; Alan Coopersmith, Jonathan Perkins)
 
+• Fix compiler warnings in dbus-send(1)
+  (dbus!558, dbus!559; Simon McVittie)
+
 • Update fallback subprojects for GLib and Expat
   (dbus!426, dbus!429; Simon McVittie)
 
@@ -94,9 +125,16 @@ Tests and CI:
 • Skip a known-failing test on all FreeBSD versions
   (dbus#308, Simon McVittie)
 
+• Consistently pair `g_strdup_printf()` with `g_free`
+  (dbus!537, GermanAizek)
+
+• Fix test failure if DBUS_TEST_DBUS_MONITOR is unset
+  (dbus#424, Philip Withnall)
+
 • CI fixes
-  (dbus#546, dbus#547, dbus#548, dbus#558, dbus!528, dbus!531;
-  Simon McVittie, Gleb Popov)
+  (dbus#546, dbus#547, dbus#548, dbus#558, dbus#572,
+  dbus!528, dbus!531, dbus!556, dbus!557;
+  Simon McVittie, Gleb Popov, Ralf Habacker)
 
 dbus 1.16.2 (2025-02-27)
 ========================
